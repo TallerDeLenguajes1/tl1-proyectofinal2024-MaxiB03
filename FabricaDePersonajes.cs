@@ -108,7 +108,5 @@ namespace GeneracionDePersonajes
             return apodo;
         }
 
-
-
     }
 }

@@ -14,6 +14,9 @@ namespace EspacioPersonaje
         public DateTime FechaNacimiento { get => fechaNacimiento; set => fechaNacimiento = value; }
         public int Edad { get => edad; set => edad = value; }
 
+        // Constructor sin parámetros necesario para la deserialización
+        public Datos() { }
+
         //Constructor
         public Datos(string nombre, string tipo, string apodo, DateTime fechaNacimiento, int edad)
         {
@@ -42,6 +45,9 @@ namespace EspacioPersonaje
         public int Armadura { get => armadura; set => armadura = value; }
         public int Salud { get => salud; set => salud = value; }
 
+        // Constructor sin parámetros necesario para la deserialización
+        public Caracteristicas() { }
+
         //Constructor
         public Caracteristicas(int velocidad, int destreza, int fuerza, int nivel, int armadura, int salud)
         {
@@ -61,6 +67,9 @@ namespace EspacioPersonaje
 
         public Datos Datos { get => datos; set => datos = value; }
         public Caracteristicas Caracteristicas { get => caracteristicas; set => caracteristicas = value; }
+
+        // Constructor sin parámetros necesario para la deserialización
+        public Personaje() { }
 
         //Constructor
         public Personaje(string nombre, string tipo, string apodo, DateTime fechaNacimiento, int edad, int velocidad, int destreza, int fuerza, int nivel, int armadura, int salud)

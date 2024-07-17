@@ -1,21 +1,33 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using EspacioPersonaje;
+using EspacioPersistencia;
 using GeneracionDePersonajes;
 
-Console.WriteLine("Hello, World!");
-
 FabricaDePersonajes fabrica = new FabricaDePersonajes();
+PersonajesJson personajesJson = new PersonajesJson();
 
-List<Personaje> ListaDePersonajes = new List<Personaje>();
+string nombreArchivo="Personajes.json";
+List<Personaje> ListaDePersonajes;
 
-for (int i = 0; i < 10; i++)
+if(personajesJson.Existe(nombreArchivo))
 {
-    Personaje personaje = fabrica.CrearPersonaje();
-    ListaDePersonajes.Add(personaje);
+    ListaDePersonajes = personajesJson.LeerPersonajes("Personajes.json");
+
+}else
+{
+    ListaDePersonajes = new List<Personaje>();
+
+    for (int i = 0; i < 10; i++)
+    {
+        Personaje personaje = fabrica.CrearPersonaje();
+        ListaDePersonajes.Add(personaje);
+    }
+
+    personajesJson.GuardarPersonajes(ListaDePersonajes, nombreArchivo);
 }
 
 foreach (var personaje in ListaDePersonajes)
 {
     personaje.MostrarPersonaje();
-    Console.WriteLine("--------------------");
+    Console.WriteLine("---------------------------");
 }
