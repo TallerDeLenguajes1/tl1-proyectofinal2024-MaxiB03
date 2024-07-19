@@ -2,6 +2,8 @@
 using EspacioPersonaje;
 using EspacioPersistencia;
 using GeneracionDePersonajes;
+using EspacioCombate;
+using EspacioAscii;
 
 FabricaDePersonajes fabrica = new FabricaDePersonajes();
 PersonajesJson personajesJson = new PersonajesJson();
@@ -26,8 +28,20 @@ if(personajesJson.Existe(nombreArchivo))
     personajesJson.GuardarPersonajes(ListaDePersonajes, nombreArchivo);
 }
 
+/*Console.WriteLine("--- Personajes Disponibles ---");
+int j=0;
+
 foreach (var personaje in ListaDePersonajes)
 {
+    j += 1;
+    Console.WriteLine($"======== PERSONAJE [{j}] ========");
     personaje.MostrarPersonaje();
-    Console.WriteLine("---------------------------");
-}
+    Console.WriteLine("-------------------------------");
+}*/
+
+Ascii ascii = new Ascii();
+
+ascii.titulo();
+
+Combate combate = new Combate();
+combate.IniciarTorre(ListaDePersonajes);
