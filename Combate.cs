@@ -10,12 +10,11 @@ namespace EspacioCombate
         Random random = new Random();
         Ascii ascii = new Ascii();
 
-        public void IniciarTorre(List<Personaje> ListaDePersonajes)
+        public void IniciarTorre(List<Personaje> ListaDePersonajes, Personaje personaje1)
         {
-            Personaje personaje1 = SeleccionarPersonaje(ListaDePersonajes);
-            ListaDePersonajes.Remove(personaje1);
-            
-            Console.WriteLine($"\n--- Iniciando Torre con {personaje1.Datos.Nombre} ---");
+
+            Console.WriteLine($"\n=========== Iniciando Torre con {personaje1.Datos.Nombre} ===========");
+            ascii.mostarPersonajeAscii(personaje1.Datos.Nombre);
 
             while (personaje1.Caracteristicas.Salud > 0 && ListaDePersonajes.Count > 0)
             {
@@ -33,9 +32,9 @@ namespace EspacioCombate
                 RealizarFatality(personaje1);
                 ListaDePersonajes.Remove(oponente);
 
-                Console.WriteLine("¡Ganaste el combate! Selecciona la mejora que creas conveniente y avanza en la torre.");
+                Console.WriteLine("Selecciona la mejora que creas conveniente y avanza en la torre.");
                 MejorarHabilidades(personaje1);
-                Console.WriteLine("\nSUBIENDO...");
+                ascii.SubirTorre();
             }
 
             if(personaje1.Caracteristicas.Salud >0)
@@ -44,7 +43,7 @@ namespace EspacioCombate
             }
         }
 
-        private Personaje SeleccionarPersonaje(List<Personaje> listaDePersonajes)
+        public Personaje SeleccionarPersonaje(List<Personaje> listaDePersonajes)
         {
             Console.WriteLine($"Selecciona tu personaje para combatir en la torre:");
             for (int i = 0; i < listaDePersonajes.Count; i++)
@@ -75,7 +74,7 @@ namespace EspacioCombate
 
             if (personaje2.Caracteristicas.Salud <= 0)
             {
-                Console.WriteLine($"====== {personaje2.Datos.Nombre} ha sido vencido ======");
+                Console.WriteLine($"====== ¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido ======");
             }
         }
 
@@ -83,7 +82,7 @@ namespace EspacioCombate
         {
             int danio = CalcularDanio(atacante, defensor);
             defensor.Caracteristicas.Salud -= danio;
-            Console.WriteLine($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. Salud de {defensor.Datos.Nombre}: {defensor.Caracteristicas.Salud}");
+            Console.WriteLine($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}");
         }
 
         private int CalcularDanio(Personaje atacante, Personaje defensor)
@@ -100,7 +99,7 @@ namespace EspacioCombate
 
         private void MejorarHabilidades(Personaje ganador)
         {
-            Console.WriteLine($"[Condicion Actual de {ganador.Datos.Nombre}] Salud: {ganador.Caracteristicas.Salud}, Armadura: {ganador.Caracteristicas.Armadura} ");
+            Console.WriteLine($"Condicion Actual de {ganador.Datos.Nombre}, [Salud]: {ganador.Caracteristicas.Salud}, [Armadura]: {ganador.Caracteristicas.Armadura} ");
             Console.WriteLine("1.Mejorar +10 en Salud");
             Console.WriteLine("2.Mejorar +5 en Armadura");
 
