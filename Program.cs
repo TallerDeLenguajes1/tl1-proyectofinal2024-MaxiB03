@@ -2,8 +2,6 @@
 using EspacioPersonaje;
 using EspacioPersistencia;
 using GeneracionDePersonajes;
-using EspacioCombate;
-using EspacioAscii;
 using EspacioMenu;
 
 FabricaDePersonajes fabrica = new FabricaDePersonajes();
@@ -18,6 +16,7 @@ if(personajesJson.Existe(nombreArchivo))
 
 }else
 {
+    Console.WriteLine("No se encontro archivo, generando personajes...");
     ListaDePersonajes = new List<Personaje>();
 
     for (int i = 0; i < 10; i++)

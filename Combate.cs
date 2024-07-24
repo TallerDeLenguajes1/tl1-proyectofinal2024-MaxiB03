@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using EspacioPersistencia;
 using EspacioPersonaje;
 using EspacioAscii;
 
@@ -9,18 +8,26 @@ namespace EspacioCombate
     {
         Random random = new Random();
         Ascii ascii = new Ascii();
+        HistorialJson historial = new HistorialJson();
+        RegistroGanador ganador = new RegistroGanador();
+        string nombreArchivo="Historial.json";
+        int cantidadFatalitys=0;
 
         public void IniciarTorre(List<Personaje> ListaDePersonajes, Personaje personaje1)
         {
+            int cantidadOponentes=ListaDePersonajes.Count;
 
-            Console.WriteLine($"\n=========== Iniciando Torre con {personaje1.Datos.Nombre} ===========");
+            ascii.TiempoDeTextoCentrado($"=============== Iniciando Torre con {personaje1.Datos.Nombre} ===============", 20);
             ascii.mostarPersonajeAscii(personaje1.Datos.Nombre);
 
             while (personaje1.Caracteristicas.Salud > 0 && ListaDePersonajes.Count > 0)
             {
                 Personaje oponente = ListaDePersonajes[random.Next(ListaDePersonajes.Count)];
 
-                Console.WriteLine($"\n====== Combate entre {personaje1.Datos.Nombre} y {oponente.Datos.Nombre} ======");
+                ascii.TiempoDeTextoCentrado($"=============== Rival Encontrado, {oponente.Datos.Nombre} ===============", 20);
+                ascii.mostarPersonajeAscii(oponente.Datos.Nombre);
+
+                ascii.TiempoDeTexto($"\n====== Combate entre {personaje1.Datos.Nombre} y {oponente.Datos.Nombre} ======", 20);
                 RealizarCombate(personaje1, oponente);
 
                 if (personaje1.Caracteristicas.Salud <= 0)
@@ -32,33 +39,22 @@ namespace EspacioCombate
                 RealizarFatality(personaje1);
                 ListaDePersonajes.Remove(oponente);
 
-                Console.WriteLine("Selecciona la mejora que creas conveniente y avanza en la torre.");
-                MejorarHabilidades(personaje1);
-                ascii.SubirTorre();
+                if(ListaDePersonajes.Count != 0)
+                {
+                    Console.WriteLine("Selecciona la mejora que creas conveniente y avanza en la torre.");
+                    MejorarHabilidades(personaje1);
+                    ascii.TiempoDeTextoCentrado("Subiendo torre... cargando rival...", 20);
+                }
             }
 
-            if(personaje1.Caracteristicas.Salud >0)
-            {
-                Console.WriteLine("¡Felicidades! ¡Ganaste el Mortal Kombat!");
-            }
-        }
+            ascii.Logo();
 
-        public Personaje SeleccionarPersonaje(List<Personaje> listaDePersonajes)
-        {
-            Console.WriteLine($"Selecciona tu personaje para combatir en la torre:");
-            for (int i = 0; i < listaDePersonajes.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {listaDePersonajes[i].Datos.Nombre}");
-            }
+            Console.WriteLine($"\n=== ¡FELICIDADES! Ganaste Mortal kombat ===");
+            ganador.MostrarGanador(personaje1, cantidadOponentes, cantidadFatalitys, DateTime.Now);
+            Console.WriteLine("¡Demostraste ser el mejor y entras al Ranking historico de ganadores!");
 
-            int seleccion;
-
-            while (!int.TryParse(Console.ReadLine(), out seleccion) || seleccion < 1 || seleccion > listaDePersonajes.Count)
-            {
-                Console.WriteLine("Selección no válida. Inténtelo de nuevo.");
-            }
-
-            return listaDePersonajes[seleccion - 1];
+            historial.GuardarGanador(personaje1, cantidadOponentes, cantidadFatalitys, nombreArchivo);
+            return;
         }
 
         private void RealizarCombate(Personaje personaje1, Personaje personaje2)
@@ -74,7 +70,7 @@ namespace EspacioCombate
 
             if (personaje2.Caracteristicas.Salud <= 0)
             {
-                Console.WriteLine($"====== ¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido ======");
+                ascii.TiempoDeTexto($"====== ¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido ======", 30);
             }
         }
 
@@ -82,7 +78,7 @@ namespace EspacioCombate
         {
             int danio = CalcularDanio(atacante, defensor);
             defensor.Caracteristicas.Salud -= danio;
-            Console.WriteLine($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}");
+            ascii.TiempoDeTexto($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}", 5);
         }
 
         private int CalcularDanio(Personaje atacante, Personaje defensor)
@@ -99,7 +95,7 @@ namespace EspacioCombate
 
         private void MejorarHabilidades(Personaje ganador)
         {
-            Console.WriteLine($"Condicion Actual de {ganador.Datos.Nombre}, [Salud]: {ganador.Caracteristicas.Salud}, [Armadura]: {ganador.Caracteristicas.Armadura} ");
+            Console.WriteLine($"Condicion Actual de {ganador.Datos.Nombre}, [Salud]: {ganador.Caracteristicas.Salud}, [Armadura]: {ganador.Caracteristicas.Armadura}");
             Console.WriteLine("1.Mejorar +10 en Salud");
             Console.WriteLine("2.Mejorar +5 en Armadura");
 
@@ -113,17 +109,17 @@ namespace EspacioCombate
             if(seleccion == 1)
             {
                 ganador.Caracteristicas.Salud += 10;
-                Console.WriteLine($"{ganador.Datos.Nombre} recibe +10 en salud.");
+                Console.WriteLine($"\n{ganador.Datos.Nombre} recibe +10 en salud.");
             }else
             {
                 ganador.Caracteristicas.Armadura += 5;
-                Console.WriteLine($"{ganador.Datos.Nombre} recibe +5 en Armadura.");
+                Console.WriteLine($"\n{ganador.Datos.Nombre} recibe +5 en Armadura.");
             }
         }
 
         private void RealizarFatality(Personaje ganador)
         {
-            string[] comandos = {"sdsa5", "fdfd8", "qwwq1"};
+            string[] comandos = {"sdsa5", "fdfd8", "qwwq1", "jklk0"};
             string comandoSeleccionado = comandos[random.Next(comandos.Length)];
 
             ascii.fatality();
@@ -135,14 +131,14 @@ namespace EspacioCombate
             if (comandoUsuario == comandoSeleccionado)
             {
                 ganador.Caracteristicas.Armadura += 5;
-                Console.WriteLine("¡Fatality Exitosa! Armadura mejorada en 5 puntos.");
+                cantidadFatalitys++;
+                ascii.TiempoDeTexto("¡Fatality Exitosa! Armadura mejorada en 5 puntos.", 30);
             }
             else
             {
-                Console.WriteLine("¡Fallaste! No se realizó la Fatality.");
+                ascii.TiempoDeTexto("¡Fallaste! No se realizó la Fatality.", 30);
             }
         }
-
 
     }
 }

@@ -1,3 +1,5 @@
+using EspacioAscii;
+
 namespace EspacioPersonaje
 {
     public class Datos
@@ -80,20 +82,24 @@ namespace EspacioPersonaje
 
         public void MostrarPersonaje()
         {
-            Console.WriteLine("Datos del Personaje:");
-            Console.WriteLine("Nombre: " + Datos.Nombre);
-            Console.WriteLine("Tipo: " + Datos.Tipo);
-            Console.WriteLine("Apodo: " + Datos.Apodo);
-            Console.WriteLine("Fecha de Nacimiento: " + Datos.FechaNacimiento.ToShortDateString());
-            Console.WriteLine("Edad: " + Datos.Edad);
+            Ascii ascii = new Ascii();
 
-            Console.WriteLine("\nCaracterísticas del Personaje:");
-            Console.WriteLine("Velocidad: " + Caracteristicas.Velocidad);
-            Console.WriteLine("Destreza: " + Caracteristicas.Destreza);
-            Console.WriteLine("Fuerza: " + Caracteristicas.Fuerza);
-            Console.WriteLine("Nivel: " + Caracteristicas.Nivel);
-            Console.WriteLine("Armadura: " + Caracteristicas.Armadura);
-            Console.WriteLine("Salud: " + Caracteristicas.Salud);
+            ascii.EscribirCentrado("\n==============================");
+            ascii.EscribirCentrado("\nDATOS");
+            ascii.EscribirCentrado("Nombre: " + Datos.Nombre);
+            ascii.EscribirCentrado("Tipo: " + Datos.Tipo);
+            ascii.EscribirCentrado("Apodo: " + Datos.Apodo);
+            ascii.EscribirCentrado("Fecha de Nacimiento: " + Datos.FechaNacimiento.ToShortDateString());
+            ascii.EscribirCentrado("Edad: " + Datos.Edad);
+            Console.WriteLine();
+            ascii.EscribirCentrado("CARACTERISTICAS");
+            ascii.EscribirCentrado("Velocidad: " + Caracteristicas.Velocidad);
+            ascii.EscribirCentrado("Destreza: " + Caracteristicas.Destreza);
+            ascii.EscribirCentrado("Fuerza: " + Caracteristicas.Fuerza);
+            ascii.EscribirCentrado("Nivel: " + Caracteristicas.Nivel);
+            ascii.EscribirCentrado("Armadura: " + Caracteristicas.Armadura);
+            ascii.EscribirCentrado("Salud: " + Caracteristicas.Salud);
+            ascii.EscribirCentrado("\n==============================");
         }
     }
 }

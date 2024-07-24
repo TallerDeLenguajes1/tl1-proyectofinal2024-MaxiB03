@@ -1,8 +1,7 @@
 using EspacioPersonaje;
-using EspacioPersistencia;
-using GeneracionDePersonajes;
 using EspacioCombate;
 using EspacioAscii;
+using EspacioPersistencia;
 
 namespace EspacioMenu
 {
@@ -17,6 +16,8 @@ namespace EspacioMenu
 
         Combate combate = new Combate();
         Ascii ascii = new Ascii();
+        HistorialJson historial = new HistorialJson();
+        string nombreArchivoHistorial = "Historial.json";
         
         public void MostrarMenu()
         {
@@ -26,13 +27,14 @@ namespace EspacioMenu
             {
                 Console.Clear();
                 ascii.titulo();
-                Console.WriteLine("========== Menú Principal ==========");
+                ascii.Menu();
                 Console.WriteLine("1. Jugar Modo Torre");
                 Console.WriteLine("2. Mostrar Personajes");
-                Console.WriteLine("3. Salir");
+                Console.WriteLine("3. Mostrar Historial de ganadores");
+                Console.WriteLine("4. Salir");
                 Console.WriteLine("Seleccione una opción:");
 
-                while (!int.TryParse(Console.ReadLine(), out opcion) || opcion < 1 || opcion > 3)
+                while (!int.TryParse(Console.ReadLine(), out opcion) || opcion < 1 || opcion > 4)
                 {
                     Console.WriteLine("Selección no válida. Inténtelo de nuevo.");
                 }
@@ -46,19 +48,23 @@ namespace EspacioMenu
                         MostrarPersonajes(ListaDePersonajes);
                         break;
                     case 3:
+                        MostrarGanadoresHistoricos();
+                        break;
+                    case 4:
                         Console.WriteLine("Saliendo del juego...");
                         break;
                 }
 
-                if (opcion != 3)
+                if (opcion != 4)
                 {
                     Console.WriteLine("Presione cualquier tecla para volver al menú...");
                     Console.ReadKey();
                 }
 
-            } while (opcion != 3);
+            } while (opcion != 4);
         }
 
+        //Opcion 1, Define la cant de rivales, Selecciona el personaje principal e Inicia el juego
         private void JugarTorre(List<Personaje> ListaDePersonajes)
         {
             Console.WriteLine("Selecciona dificultad de la torre: ");
@@ -73,7 +79,7 @@ namespace EspacioMenu
                 Console.WriteLine("Selección no válida. Inténtelo de nuevo.");
             }
 
-            Personaje personaje1 = combate.SeleccionarPersonaje(ListaDePersonajes);
+            Personaje personaje1 = SeleccionarPersonaje(ListaDePersonajes);
             ListaDePersonajes.Remove(personaje1);
 
             switch (seleccion)
@@ -91,6 +97,24 @@ namespace EspacioMenu
             combate.IniciarTorre(ListaDePersonajes, personaje1);
         }
 
+        private Personaje SeleccionarPersonaje(List<Personaje> listaDePersonajes)
+        {
+            Console.WriteLine($"Selecciona tu personaje para combatir en la torre:");
+            for (int i = 0; i < listaDePersonajes.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {listaDePersonajes[i].Datos.Nombre}");
+            }
+
+            int seleccion;
+
+            while (!int.TryParse(Console.ReadLine(), out seleccion) || seleccion < 1 || seleccion > listaDePersonajes.Count)
+            {
+                Console.WriteLine("Selección no válida. Inténtelo de nuevo.");
+            }
+
+            return listaDePersonajes[seleccion - 1];
+        }
+        
         private void BorrarPersonajesDeLista(List<Personaje> ListaDePersonajes, int cantidadABorrar)
         {
             Random random = new Random();
@@ -102,19 +126,21 @@ namespace EspacioMenu
             }
         }
 
+        //Opcion 2, Muestra de personajes
         private void MostrarPersonajes(List<Personaje> listaDePersonajes)
         {
             int seleccion;
 
             do
             {
-                Console.WriteLine("\n========== Lista de Personajes ==========");
-                Console.WriteLine("0.Volver");
+                ascii.Personajes();
+                
                 for (int i = 0; i < listaDePersonajes.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {listaDePersonajes[i].Datos.Nombre}");
                 }
                 Console.WriteLine("11.Mostrar Datos y Caracteristicas de todos");
+                Console.WriteLine("0.Volver");
 
                 Console.WriteLine($"Selecciona personaje para mostrar sus datos y caracteristicas: ");
 
@@ -135,15 +161,35 @@ namespace EspacioMenu
 
                     foreach (var personaje in ListaDePersonajes)
                     {
-                        j += 1;
-                        Console.WriteLine($"======== PERSONAJE [{j}] ========");
+                        j ++;
+                        ascii.EscribirCentrado($"PERSONAJE [{j}]");
                         personaje.MostrarPersonaje();
-                        Console.WriteLine("-------------------------------");
                     }
                 }
 
             } while (seleccion!=0);
         }
+
+        //Opcion 3, Muestra ganadores
+        private void MostrarGanadoresHistoricos()
+        {
+            if (historial.Existe(nombreArchivoHistorial))
+            {
+                List<RegistroGanador> ganadores = historial.LeerGanadores(nombreArchivoHistorial);
+                
+                ascii.Historial();
+                
+                foreach (var ganador in ganadores)
+                {
+                    ganador.MostrarGanador(ganador.Ganador, ganador.CantidadOponentes, ganador.CantidadFatalitys, ganador.Fecha);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No hay ganadores históricos registrados.");
+            }
+        }
+
 
     }
 }
