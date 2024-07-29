@@ -1,6 +1,8 @@
 using EspacioPersistencia;
 using EspacioPersonaje;
 using EspacioAscii;
+using EspacioApi;
+using System.Text.Json;
 
 namespace EspacioCombate
 {
@@ -13,21 +15,31 @@ namespace EspacioCombate
         string nombreArchivo="Historial.json";
         int cantidadFatalitys=0;
 
-        public void IniciarTorre(List<Personaje> ListaDePersonajes, Personaje personaje1)
+        public async Task IniciarTorre(List<Personaje> ListaDePersonajes, Personaje personaje1)
         {
             int cantidadOponentes=ListaDePersonajes.Count;
-
+            int contadorCombates=1;
+           
             ascii.TiempoDeTextoCentrado($"=============== Iniciando Torre con {personaje1.Datos.Nombre} ===============", 20);
             ascii.mostarPersonajeAscii(personaje1.Datos.Nombre);
 
             while (personaje1.Caracteristicas.Salud > 0 && ListaDePersonajes.Count > 0)
             {
+                Pais salida = await GetCurrecyRateAsync();
                 Personaje oponente = ListaDePersonajes[random.Next(ListaDePersonajes.Count)];
 
-                ascii.TiempoDeTextoCentrado($"=============== Rival Encontrado, {oponente.Datos.Nombre} ===============", 20);
+                ascii.TiempoDeTextoCentrado($"============= Rival Encontrado, {oponente.Datos.Nombre} =============", 20);
                 ascii.mostarPersonajeAscii(oponente.Datos.Nombre);
 
-                ascii.TiempoDeTexto($"\n====== Combate entre {personaje1.Datos.Nombre} y {oponente.Datos.Nombre} ======", 20);
+                ascii.EscribirCentrado("===========================");
+                ascii.EscribirCentrado($"Lugar de Combate: {salida.Name.Common}");
+                ascii.EscribirCentrado($"Combate Numero {contadorCombates}");
+                ascii.EscribirCentrado("===========================");
+                Console.WriteLine();
+
+                contadorCombates++;
+
+                ascii.TiempoDeTextoCentrado($"{personaje1.Datos.Nombre} VS {oponente.Datos.Nombre}", 30);
                 RealizarCombate(personaje1, oponente);
 
                 if (personaje1.Caracteristicas.Salud <= 0)
@@ -39,9 +51,14 @@ namespace EspacioCombate
                 RealizarFatality(personaje1);
                 ListaDePersonajes.Remove(oponente);
 
+                if(contadorCombates==cantidadOponentes)
+                {
+                    ascii.TiempoDeTexto("El proximo rival es el mas fuerte, Gana tu ultimo combate y seras campeon del Mortal Kombat", 20);
+                }
+
                 if(ListaDePersonajes.Count != 0)
                 {
-                    Console.WriteLine("Selecciona la mejora que creas conveniente y avanza en la torre.");
+                    Console.WriteLine("\nSelecciona la mejora que creas conveniente y avanza en la torre.");
                     MejorarHabilidades(personaje1);
                     ascii.TiempoDeTextoCentrado("Subiendo torre... cargando rival...", 20);
                 }
@@ -70,7 +87,8 @@ namespace EspacioCombate
 
             if (personaje2.Caracteristicas.Salud <= 0)
             {
-                ascii.TiempoDeTexto($"====== ¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido ======", 30);
+                Console.WriteLine();
+                ascii.TiempoDeTextoCentrado($"¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido", 30);
             }
         }
 
@@ -78,7 +96,7 @@ namespace EspacioCombate
         {
             int danio = CalcularDanio(atacante, defensor);
             defensor.Caracteristicas.Salud -= danio;
-            ascii.TiempoDeTexto($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}", 5);
+            ascii.TiempoDeTextoCentrado($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}", 5);
         }
 
         private int CalcularDanio(Personaje atacante, Personaje defensor)
@@ -96,7 +114,7 @@ namespace EspacioCombate
         private void MejorarHabilidades(Personaje ganador)
         {
             Console.WriteLine($"Condicion Actual de {ganador.Datos.Nombre}, [Salud]: {ganador.Caracteristicas.Salud}, [Armadura]: {ganador.Caracteristicas.Armadura}");
-            Console.WriteLine("1.Mejorar +10 en Salud");
+            Console.WriteLine("1.Mejorar +15 en Salud");
             Console.WriteLine("2.Mejorar +5 en Armadura");
 
             int seleccion;
@@ -108,8 +126,8 @@ namespace EspacioCombate
 
             if(seleccion == 1)
             {
-                ganador.Caracteristicas.Salud += 10;
-                Console.WriteLine($"\n{ganador.Datos.Nombre} recibe +10 en salud.");
+                ganador.Caracteristicas.Salud += 15;
+                Console.WriteLine($"\n{ganador.Datos.Nombre} recibe +15 en salud.");
             }else
             {
                 ganador.Caracteristicas.Armadura += 5;
@@ -122,6 +140,7 @@ namespace EspacioCombate
             string[] comandos = {"sdsa5", "fdfd8", "qwwq1", "jklk0"};
             string comandoSeleccionado = comandos[random.Next(comandos.Length)];
 
+            Console.WriteLine();
             ascii.fatality();
             Console.WriteLine("¡Realiza un Fatality para mejorar tu armadura!");
             Console.WriteLine($"Comando ({comandoSeleccionado}):");
@@ -130,13 +149,42 @@ namespace EspacioCombate
 
             if (comandoUsuario == comandoSeleccionado)
             {
-                ganador.Caracteristicas.Armadura += 5;
+                ganador.Caracteristicas.Armadura += 10;
                 cantidadFatalitys++;
-                ascii.TiempoDeTexto("¡Fatality Exitosa! Armadura mejorada en 5 puntos.", 30);
+                ascii.TiempoDeTexto("¡Fatality Exitosa! Armadura mejorada en 10 puntos.", 30);
             }
             else
             {
                 ascii.TiempoDeTexto("¡Fallaste! No se realizó la Fatality.", 30);
+            }
+        }
+
+        static async Task<Pais> GetCurrecyRateAsync()
+        {
+            var paises = new List<string> {"Argentina", "Brazil", "Uruguay", "Mexico", "Colombia"};
+            var random = new Random();
+            var paisRandom = paises[random.Next(paises.Count)];
+
+            var url = $"https://restcountries.com/v3.1/name/{paisRandom}";
+            
+            try
+            {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // Deserializar como una lista de Pais
+                List<Pais>? pais = JsonSerializer.Deserialize<List<Pais>>(responseBody);
+
+                // Toma el primer elemento de la lista
+                return pais.FirstOrDefault();
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("Problemas de acceso a la API");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return null;
             }
         }
 

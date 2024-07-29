@@ -12,7 +12,7 @@ namespace GeneracionDePersonajes
             string nombre = GenerarNombre();
             string tipo = GenerarTipo(nombre);
             string apodo = GenerarApodo(nombre);
-            int edad = random.Next(20, 300);
+            int edad = GenerarEdad(tipo);
             var fechaNacimiento = DateTime.Now.AddYears(-edad);
             int velocidad = random.Next(1, 11);
             int destreza = random.Next(1, 6);
@@ -107,6 +107,27 @@ namespace GeneracionDePersonajes
 
             return apodo;
         }
+
+        private int GenerarEdad(string tipo)
+        {
+            int edad=0;
+
+            switch (tipo)
+            {
+                case "Humano":
+                    edad = random.Next(20, 40);
+                    break;
+                case "Cyborg":
+                case "Criatura":
+                    edad = random.Next(100, 200);
+                    break;
+                case "Dios":
+                    edad = random.Next(200, 300);
+                    break;
+            }
+            return edad;
+        }
+
 
     }
 }

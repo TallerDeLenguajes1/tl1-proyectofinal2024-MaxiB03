@@ -82,24 +82,24 @@ namespace EspacioPersonaje
 
         public void MostrarPersonaje()
         {
-            Ascii ascii = new Ascii();
+            Ascii visual = new Ascii();
 
-            ascii.EscribirCentrado("\n==============================");
-            ascii.EscribirCentrado("\nDATOS");
-            ascii.EscribirCentrado("Nombre: " + Datos.Nombre);
-            ascii.EscribirCentrado("Tipo: " + Datos.Tipo);
-            ascii.EscribirCentrado("Apodo: " + Datos.Apodo);
-            ascii.EscribirCentrado("Fecha de Nacimiento: " + Datos.FechaNacimiento.ToShortDateString());
-            ascii.EscribirCentrado("Edad: " + Datos.Edad);
+            visual.EscribirCentrado("\n==============================");
+            visual.EscribirCentrado("\nDATOS");
+            visual.EscribirCentrado("Nombre: " + Datos.Nombre);
+            visual.EscribirCentrado("Tipo: " + Datos.Tipo);
+            visual.EscribirCentrado("Apodo: " + Datos.Apodo);
+            visual.EscribirCentrado("Fecha de Nacimiento: " + Datos.FechaNacimiento.ToShortDateString());
+            visual.EscribirCentrado("Edad: " + Datos.Edad);
             Console.WriteLine();
-            ascii.EscribirCentrado("CARACTERISTICAS");
-            ascii.EscribirCentrado("Velocidad: " + Caracteristicas.Velocidad);
-            ascii.EscribirCentrado("Destreza: " + Caracteristicas.Destreza);
-            ascii.EscribirCentrado("Fuerza: " + Caracteristicas.Fuerza);
-            ascii.EscribirCentrado("Nivel: " + Caracteristicas.Nivel);
-            ascii.EscribirCentrado("Armadura: " + Caracteristicas.Armadura);
-            ascii.EscribirCentrado("Salud: " + Caracteristicas.Salud);
-            ascii.EscribirCentrado("\n==============================");
+            visual.EscribirCentrado("CARACTERISTICAS");
+            visual.EscribirCentrado("Velocidad: " + Caracteristicas.Velocidad);
+            visual.EscribirCentrado("Destreza: " + Caracteristicas.Destreza);
+            visual.EscribirCentrado("Fuerza: " + Caracteristicas.Fuerza);
+            visual.EscribirCentrado("Nivel: " + Caracteristicas.Nivel);
+            visual.EscribirCentrado("Armadura: " + Caracteristicas.Armadura);
+            visual.EscribirCentrado("Salud: " + Caracteristicas.Salud);
+            visual.EscribirCentrado("\n==============================");
         }
     }
 }

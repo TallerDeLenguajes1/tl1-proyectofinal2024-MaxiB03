@@ -19,7 +19,7 @@ namespace EspacioMenu
         HistorialJson historial = new HistorialJson();
         string nombreArchivoHistorial = "Historial.json";
         
-        public void MostrarMenu()
+        public async Task MostrarMenu()
         {
             int opcion;
 
@@ -39,10 +39,12 @@ namespace EspacioMenu
                     Console.WriteLine("Selección no válida. Inténtelo de nuevo.");
                 }
 
+                List<Personaje> copiaDeLaLista = ClonarListaPersonajes(ListaDePersonajes);
+                
                 switch (opcion)
                 {
                     case 1:
-                        JugarTorre(ListaDePersonajes);
+                        await JugarTorre(copiaDeLaLista);
                         break;
                     case 2:
                         MostrarPersonajes(ListaDePersonajes);
@@ -65,7 +67,7 @@ namespace EspacioMenu
         }
 
         //Opcion 1, Define la cant de rivales, Selecciona el personaje principal e Inicia el juego
-        private void JugarTorre(List<Personaje> ListaDePersonajes)
+        private async Task JugarTorre(List<Personaje> ListaDePersonajes)
         {
             Console.WriteLine("Selecciona dificultad de la torre: ");
             Console.WriteLine("1.Torre de 3 Personajes");
@@ -94,9 +96,43 @@ namespace EspacioMenu
                 break;
             }
 
-            combate.IniciarTorre(ListaDePersonajes, personaje1);
+            //Inicio del juego
+            await combate.IniciarTorre(ListaDePersonajes, personaje1);
         }
 
+        //Metodo que clona la lista de personajes original para no perderla y jugar de nuevo
+        public static List<Personaje> ClonarListaPersonajes(List<Personaje> listaOriginal)
+        {
+            List<Personaje> nuevaLista = new List<Personaje>();
+            foreach (var personaje in listaOriginal)
+            {
+                // Creao una nueva instancia del personaje y copio sus propiedades
+                Personaje nuevoPersonaje = new Personaje
+                {
+                    Datos = new Datos
+                    {
+                        Nombre = personaje.Datos.Nombre,
+                        Tipo = personaje.Datos.Tipo,
+                        Apodo = personaje.Datos.Apodo,
+                        FechaNacimiento = personaje.Datos.FechaNacimiento,
+                        Edad = personaje.Datos.Edad
+                    },
+                    Caracteristicas = new Caracteristicas
+                    {
+                        Velocidad = personaje.Caracteristicas.Velocidad,
+                        Destreza = personaje.Caracteristicas.Destreza,
+                        Fuerza = personaje.Caracteristicas.Fuerza,
+                        Nivel = personaje.Caracteristicas.Nivel,
+                        Armadura = personaje.Caracteristicas.Armadura,
+                        Salud = personaje.Caracteristicas.Salud
+                    }
+                };
+                nuevaLista.Add(nuevoPersonaje);
+            }
+            return nuevaLista;
+        }
+
+        //Metodo de seleccion del personaje principal
         private Personaje SeleccionarPersonaje(List<Personaje> listaDePersonajes)
         {
             Console.WriteLine($"Selecciona tu personaje para combatir en la torre:");
@@ -115,6 +151,7 @@ namespace EspacioMenu
             return listaDePersonajes[seleccion - 1];
         }
         
+        //Determino la cantidad de luchadores que tendra la torre
         private void BorrarPersonajesDeLista(List<Personaje> ListaDePersonajes, int cantidadABorrar)
         {
             Random random = new Random();
@@ -189,7 +226,6 @@ namespace EspacioMenu
                 Console.WriteLine("No hay ganadores históricos registrados.");
             }
         }
-
 
     }
 }

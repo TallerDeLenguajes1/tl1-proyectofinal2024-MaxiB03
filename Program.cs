@@ -10,6 +10,7 @@ PersonajesJson personajesJson = new PersonajesJson();
 string nombreArchivo="Personajes.json";
 List<Personaje> ListaDePersonajes;
 
+//Si existe archivo Json lo utiliza, sino genera 10 personajes y los guarda
 if(personajesJson.Existe(nombreArchivo))
 {
     ListaDePersonajes = personajesJson.LeerPersonajes("Personajes.json");
@@ -28,5 +29,6 @@ if(personajesJson.Existe(nombreArchivo))
     personajesJson.GuardarPersonajes(ListaDePersonajes, nombreArchivo);
 }
 
+//Menu e Inicio del juego
 Menu menu = new Menu(ListaDePersonajes);
-menu.MostrarMenu();
+await menu.MostrarMenu();
