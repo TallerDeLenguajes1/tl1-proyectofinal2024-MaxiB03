@@ -24,6 +24,8 @@ Además, el jugador puede intentar realizar una Fatality para obtener mejoras ad
 El juego guarda un historial de los personajes ganadores y muestra los detalles de sus victorias, incluyendo la cantidad de oponentes derrotados, la cantidad de Fatalities realizados y la fecha de la victoria.
 
 # Clonar Repositorio
-``` git clone https://github.com/TallerDeLenguajes1/tl1-proyectofinal2024-MaxiB03.git
+```
+git clone https://github.com/TallerDeLenguajes1/tl1-proyectofinal2024-MaxiB03.git
+
 ```
 Una vez clonado, Desde VisualStudioCode abrir dicha carpeta y ejecutar en la terminal: dotnet run
