@@ -20,10 +20,10 @@ Después de cada combate, el personaje ganador tiene la oportunidad de mejorar s
 
 Además, el jugador puede intentar realizar una Fatality para obtener mejoras adicionales ingresando un comando específico. Si el comando es correcto, la armadura del personaje aumenta en 10 puntos.
 
-##Historial de Ganadores
+## Historial de Ganadores
 El juego guarda un historial de los personajes ganadores y muestra los detalles de sus victorias, incluyendo la cantidad de oponentes derrotados, la cantidad de Fatalities realizados y la fecha de la victoria.
 
-#Clonar Repositorio
-```git clone https://github.com/TallerDeLenguajes1/tl1-proyectofinal2024-MaxiB03.git
+# Clonar Repositorio
+``` git clone https://github.com/TallerDeLenguajes1/tl1-proyectofinal2024-MaxiB03.git
 ```
 Una vez clonado, Desde VisualStudioCode abrir dicha carpeta y ejecutar en la terminal: dotnet run
