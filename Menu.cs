@@ -26,6 +26,7 @@ namespace EspacioMenu
             do
             {
                 Console.Clear();
+                ascii.Logo2();
                 ascii.titulo();
                 ascii.Menu();
                 Console.WriteLine("1. Jugar Modo Torre");
