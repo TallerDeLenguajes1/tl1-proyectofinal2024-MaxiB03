@@ -11,44 +11,48 @@ namespace EspacioCombate
         Personaje personajePrincipal;
         Random random = new Random();
         Ascii ascii = new Ascii();
+        Ascii visual = new Ascii();
         HistorialJson historial = new HistorialJson();
         RegistroGanador ganador = new RegistroGanador();
         string nombreArchivo="Historial.json";
-        int cantidadFatalitys=0;
+        int cantidadFatalitys;
 
         public async Task IniciarTorre(List<Personaje> ListaDePersonajes, Personaje personaje1)
         {
             personajePrincipal=personaje1;
+            cantidadFatalitys=0;
             int cantidadOponentes=ListaDePersonajes.Count;
             int contadorCombates=1;
            
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            ascii.TiempoDeTextoCentrado($"=============== Iniciando Torre con {personaje1.Datos.Nombre} ===============", 20);
-            ascii.EscribirCentrado("======================================================================");
+            visual.TiempoDeTextoCentrado($"=============== Iniciando Torre con {personaje1.Datos.Nombre} ===============", 20);
+
+            visual.EscribirCentrado("======================================================================");
             Console.ResetColor();
             ascii.mostarPersonajeAscii(personaje1.Datos.Nombre);
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            ascii.EscribirCentrado("======================================================================");
-
+            visual.EscribirCentrado("======================================================================");
+            
             while (personaje1.Caracteristicas.Salud > 0 && ListaDePersonajes.Count > 0)
             {
                 Pais salida = await GetCurrecyRateAsync();
                 Personaje oponente = ListaDePersonajes[random.Next(ListaDePersonajes.Count)];
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                ascii.TiempoDeTextoCentrado($"============= Rival Encontrado, {oponente.Datos.Nombre} =============", 20);
-                ascii.EscribirCentrado("======================================================================");
+                visual.TiempoDeTextoCentrado($"============= Rival Encontrado, {oponente.Datos.Nombre} =============", 20);
+
+                visual.EscribirCentrado("======================================================================");
                 Console.ResetColor();
                 ascii.mostarPersonajeAscii(oponente.Datos.Nombre);
                 Console.ForegroundColor = ConsoleColor.Red;
-                ascii.EscribirCentrado("======================================================================");
+                visual.EscribirCentrado("======================================================================");
 
                 Console.ResetColor();
-                ascii.EscribirCentrado("===========================");
-                ascii.EscribirCentrado($"Lugar de Combate: {salida.Name.Common}");
-                ascii.EscribirCentrado($"Combate Numero {contadorCombates}");
-                ascii.EscribirCentrado($"{personaje1.Datos.Nombre} VS {oponente.Datos.Nombre}");
-                ascii.EscribirCentrado("========== FIGHT ==========");
+                visual.EscribirCentrado("===========================");
+                visual.EscribirCentrado($"Lugar de Combate: {salida.Name.Common}");
+                visual.EscribirCentrado($"Combate Numero {contadorCombates}");
+                visual.EscribirCentrado($"{personaje1.Datos.Nombre} VS {oponente.Datos.Nombre}");
+                visual.EscribirCentrado("========== FIGHT ==========");
 
                 contadorCombates++;
                 RealizarCombate(personaje1, oponente);
@@ -56,31 +60,37 @@ namespace EspacioCombate
                 if (personaje1.Caracteristicas.Salud <= 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    ascii.TiempoDeTextoCentrado($"Tu personaje {personaje1.Datos.Nombre} ha sido vencido. ¡El juego ha terminado!", 30);
+                    visual.TiempoDeTextoCentrado($"Tu personaje {personaje1.Datos.Nombre} ha sido vencido. ¡El juego ha terminado!", 30);
                     Console.ResetColor();
                     return;
                 }
 
-                RealizarFatality(personaje1);
+                // Solo incrementar fatality si se realiza correctamente
+                bool fatalityRealizada = RealizarFatality(personaje1);
+                if (fatalityRealizada)
+                {
+                    cantidadFatalitys++;
+                }
                 ListaDePersonajes.Remove(oponente);
 
                 if(contadorCombates==cantidadOponentes)
                 {
-                    ascii.TiempoDeTexto("El proximo rival es el mas fuerte, Gana tu ultimo combate y seras campeon del Mortal Kombat", 20);
+                    visual.TiempoDeTexto("El proximo rival es el mas fuerte, Gana tu ultimo combate y seras campeon del Mortal Kombat", 20);
                     Console.WriteLine();
                 }
 
+                //Si todavia quedan oponentes 
                 if(ListaDePersonajes.Count != 0)
                 {
                     Console.WriteLine("\nSelecciona la mejora que creas conveniente y avanza en la torre.");
                     MejorarHabilidades(personaje1);
-                    ascii.TiempoDeTextoCentrado("Subiendo torre... cargando rival...", 20);
+                    visual.TiempoDeTextoCentrado("Subiendo torre... cargando rival...", 20);
                     Console.WriteLine();
                 }
             }
 
+            //Muestro el ganador por pantalla y lo agrego al Json de ganadores
             ascii.Logo();
-
             Console.WriteLine($"\n=== ¡FELICIDADES! Ganaste Mortal kombat ===");
             ganador.MostrarGanador(personaje1, cantidadOponentes, cantidadFatalitys, DateTime.Now);
             Console.WriteLine("¡Demostraste ser el mejor y entras al Ranking historico de ganadores!");
@@ -93,7 +103,10 @@ namespace EspacioCombate
         {
             while (personaje1.Caracteristicas.Salud > 0 && personaje2.Caracteristicas.Salud > 0)
             {
+                //Ataca el primer personaje
                 RealizarTurno(personaje1, personaje2);
+
+                //Si luego del ataque el segundo personaje sigue con vida, realiza su ataque
                 if (personaje2.Caracteristicas.Salud > 0)
                 {
                     RealizarTurno(personaje2, personaje1);
@@ -104,7 +117,7 @@ namespace EspacioCombate
             {
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
-                ascii.TiempoDeTextoCentrado($"¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido", 30);
+                visual.TiempoDeTextoCentrado($"¡Ganaste el combate! {personaje2.Datos.Nombre} ha sido vencido", 30);
             }
         }
 
@@ -122,7 +135,7 @@ namespace EspacioCombate
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
-            ascii.TiempoDeTextoCentrado($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}", 5);
+            visual.TiempoDeTextoCentrado($"{atacante.Datos.Nombre} ataca a {defensor.Datos.Nombre} y causa {danio} de daño. [Salud de {defensor.Datos.Nombre}]: {defensor.Caracteristicas.Salud}", 5);
             Console.ResetColor(); //Color de la consola predeterminado
         }
 
@@ -162,7 +175,7 @@ namespace EspacioCombate
             }
         }
 
-        private void RealizarFatality(Personaje ganador)
+        private bool RealizarFatality(Personaje ganador)
         {
             string[] comandos = {"sdsa5", "fdfd8", "qwwq1", "jklk0"};
             string comandoSeleccionado = comandos[random.Next(comandos.Length)];
@@ -179,12 +192,13 @@ namespace EspacioCombate
             if (comandoUsuario == comandoSeleccionado)
             {
                 ganador.Caracteristicas.Armadura += 10;
-                cantidadFatalitys++;
-                ascii.TiempoDeTexto("¡Fatality Exitosa! Armadura mejorada en 10 puntos.", 30);
+                visual.TiempoDeTexto("¡Fatality Exitosa! Armadura mejorada en 10 puntos.", 30);
+                return true;
             }
             else
             {
-                ascii.TiempoDeTexto("¡Fallaste! No se realizó la Fatality.", 30);
+                visual.TiempoDeTexto("¡Fallaste! No se realizó la Fatality.", 30);
+                return false;
             }
         }
 

@@ -63,7 +63,7 @@ namespace GeneracionDePersonajes
                     tipo = "Dios";
                     break;
             }
-
+            
             return tipo;
         }
 
