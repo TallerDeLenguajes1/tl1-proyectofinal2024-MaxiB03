@@ -23,6 +23,12 @@ Además, el jugador puede intentar realizar una Fatality para obtener mejoras ad
 ## Historial de Ganadores
 El juego guarda un historial de los personajes ganadores y muestra los detalles de sus victorias, incluyendo la cantidad de oponentes derrotados, la cantidad de Fatalities realizados y la fecha de la victoria.
 
+## API de Países
+El proyecto utiliza una API externa para obtener información sobre países. Se hace una solicitud a esta API para obtener datos sobre un país aleatorio, que luego se usa para mostrar el lugar del combate en el juego.
+```
+URL: https://restcountries.com/v3.1/name/{nombre-del-pais}
+```
+
 # Clonar Repositorio
 ```
 git clone https://github.com/TallerDeLenguajes1/tl1-proyectofinal2024-MaxiB03.git
